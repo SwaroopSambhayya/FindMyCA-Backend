@@ -18,6 +18,11 @@ import 'package:dart_appwrite/dart_appwrite.dart';
 
 Future<void> start(final req, final res) async {
   final client = Client();
+  client
+      .setEndpoint(req.variables['APPWRITE_FUNCTION_ENDPOINT'])
+      .setProject(req.variables['APPWRITE_FUNCTION_PROJECT_ID'])
+      .setKey(req.variables['APPWRITE_FUNCTION_API_KEY'])
+      .setSelfSigned(status: true);
   String? token;
   // Uncomment the services you need, delete the ones you don't
   // final account = Account(client);
@@ -45,24 +50,21 @@ Future<void> start(final req, final res) async {
     };
     try {
       token = await getProfile(database, request.caId);
+      print(token);
     } catch (e) {
       print(e);
     }
     if (token != null) {
       try {
-        FCMService().sendFCMToUser(
+        bool res = await FCMService().sendFCMToUser(
             serverKey: req.variables['FCM_SERVER_KEY'],
             userFCMToken: token,
             notificationData: notificationData);
+        print(res);
       } catch (e) {
         print(e);
       }
     }
-    client
-        .setEndpoint(req.variables['APPWRITE_FUNCTION_ENDPOINT'])
-        .setProject(req.variables['APPWRITE_FUNCTION_PROJECT_ID'])
-        .setKey(req.variables['APPWRITE_FUNCTION_API_KEY'])
-        .setSelfSigned(status: true);
   }
 
   res.json({
