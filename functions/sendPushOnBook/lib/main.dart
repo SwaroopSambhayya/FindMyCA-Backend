@@ -32,6 +32,7 @@ Future<void> start(final req, final res) async {
     print(
         "Environment variables are not set. Function cannot use Appwrite SDK.");
   } else {
+    print(req.variables['APPWRITE_FUNCTION_EVENT_DATA']);
     client
         .setEndpoint(req.variables['APPWRITE_FUNCTION_ENDPOINT'])
         .setProject(req.variables['APPWRITE_FUNCTION_PROJECT_ID'])
