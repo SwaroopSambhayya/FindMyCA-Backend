@@ -1,0 +1,21 @@
+{
+    "projectId": "64663e222959a2ffa6cd",
+    "projectName": "FindMyCA",
+    "functions": [
+        {
+            "$id": "648570460793827539aa",
+            "name": "sendPushOnBook",
+            "runtime": "dart-2.17",
+            "path": "functions/sendPushOnBook",
+            "entrypoint": "lib/main.dart",
+            "ignore": [
+                ".packages",
+                ".dart_tool"
+            ],
+            "execute": [],
+            "events": [],
+            "schedule": "",
+            "timeout": 15
+        }
+    ]
+}
