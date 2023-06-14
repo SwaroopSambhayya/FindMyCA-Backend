@@ -37,7 +37,7 @@ class NotificationData {
       profilePic: data['profile_pic'] as String? ?? "",
       createdAt: data['created_at'] as String? ?? "",
       caName: data['ca_name'] as String? ?? "",
-      customerName: data['cus_name'] as String? ?? "",
+      customerName: data['customer_name'] as String? ?? "",
     );
   }
 
@@ -49,7 +49,7 @@ class NotificationData {
         'profile_pic': profilePic,
         'created_at': createdAt,
         'ca_name': caName,
-        'cus_name': customerName,
+        'customer_name': customerName,
       };
 
   /// `dart:convert`
