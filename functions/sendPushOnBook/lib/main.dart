@@ -27,7 +27,7 @@ Future<void> start(final req, final res) async {
       .setProject(req.variables['APPWRITE_FUNCTION_PROJECT_ID'])
       .setKey(req.variables['APPWRITE_FUNCTION_API_KEY'])
       .setSelfSigned(status: true);
-  List<String>? result;
+  List<String?>? result;
   Booking request;
   Map<String, String> notificationData;
   // Uncomment the services you need, delete the ones you don't
@@ -62,7 +62,7 @@ Future<void> start(final req, final res) async {
       try {
         bool res = await FCMService().sendFCMToUser(
             serverKey: req.variables['FCM_SERVER_KEY'],
-            userFCMToken: result![0],
+            userFCMToken: result![0]!,
             notificationData: notificationData);
         print(res);
         NotificationData data = NotificationData(
