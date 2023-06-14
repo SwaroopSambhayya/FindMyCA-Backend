@@ -7,7 +7,10 @@ Future<dynamic> getProfile(Databases database, String? userID) async {
         databaseId: dataBaseId,
         collectionId: profileCollectionId,
         documentId: userID);
-    return profileData.data["token"] ?? "";
+    return [
+      profileData.data["token"] ?? "",
+      "${profileData.data["fname"]} ${profileData.data["fname"]}"
+    ];
   }
   return null;
 }

@@ -1,23 +1,26 @@
 import 'dart:convert';
 
-// ignore: depend_on_referenced_packages
 import 'package:collection/collection.dart';
 
 class NotificationData {
-  String caId;
-  String cusId;
-  String title;
-  String body;
-  String profilePic;
-  String createdAt;
+  String? caId;
+  String? cusId;
+  String? title;
+  String? body;
+  String? profilePic;
+  String? createdAt;
+  String? caName;
+  String? customerName;
 
   NotificationData({
-    required this.caId,
-    required this.cusId,
-    required this.title,
-    required this.body,
-    required this.profilePic,
-    required this.createdAt,
+    this.caId,
+    this.cusId,
+    this.title,
+    this.body,
+    this.profilePic,
+    this.createdAt,
+    this.caName,
+    this.customerName,
   });
 
   @override
@@ -27,12 +30,14 @@ class NotificationData {
 
   factory NotificationData.fromMap(Map<String, dynamic> data) {
     return NotificationData(
-      caId: data['ca_id'] as String,
-      cusId: data['cus_id'] as String,
-      title: data['title'] as String,
-      body: data['body'] as String,
-      profilePic: data['profile_pic'] as String,
-      createdAt: data['created_at'] as String,
+      caId: data['ca_id'] as String? ?? "",
+      cusId: data['cus_id'] as String? ?? "",
+      title: data['title'] as String? ?? "",
+      body: data['body'] as String? ?? "",
+      profilePic: data['profile_pic'] as String? ?? "",
+      createdAt: data['created_at'] as String? ?? "",
+      caName: data['ca_name'] as String? ?? "",
+      customerName: data['cus_name'] as String? ?? "",
     );
   }
 
@@ -43,6 +48,8 @@ class NotificationData {
         'body': body,
         'profile_pic': profilePic,
         'created_at': createdAt,
+        'ca_name': caName,
+        'cus_name': customerName,
       };
 
   /// `dart:convert`
@@ -64,6 +71,8 @@ class NotificationData {
     String? body,
     String? profilePic,
     String? createdAt,
+    String? caName,
+    String? customerName,
   }) {
     return NotificationData(
       caId: caId ?? this.caId,
@@ -72,6 +81,8 @@ class NotificationData {
       body: body ?? this.body,
       profilePic: profilePic ?? this.profilePic,
       createdAt: createdAt ?? this.createdAt,
+      caName: caName ?? this.caName,
+      customerName: customerName ?? this.customerName,
     );
   }
 

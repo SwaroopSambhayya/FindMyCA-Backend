@@ -27,7 +27,7 @@ Future<void> start(final req, final res) async {
       .setProject(req.variables['APPWRITE_FUNCTION_PROJECT_ID'])
       .setKey(req.variables['APPWRITE_FUNCTION_API_KEY'])
       .setSelfSigned(status: true);
-  String? deviceToken;
+  List<String>? result;
   Booking request;
   Map<String, String> notificationData;
   // Uncomment the services you need, delete the ones you don't
@@ -51,29 +51,29 @@ Future<void> start(final req, final res) async {
     request = Booking.fromJson(req.variables['APPWRITE_FUNCTION_EVENT_DATA']);
     notificationData = {
       "title": "You have got a new request",
-      "body": "You have a new request please view for connection opportunity",
+      "body": "You have a new consultation request from",
     };
     try {
-      deviceToken = await getProfile(database, request.caId);
+      result = await getProfile(database, request.caId);
     } catch (e) {
       print(e);
     }
-    if (deviceToken != null) {
+    if (result?[0] != null) {
       try {
         bool res = await FCMService().sendFCMToUser(
             serverKey: req.variables['FCM_SERVER_KEY'],
-            userFCMToken: deviceToken,
+            userFCMToken: result![0],
             notificationData: notificationData);
         print(res);
         NotificationData data = NotificationData(
-          caId: request.caId!,
-          cusId: request.cusId!,
-          title: notificationData["title"]!,
-          body: notificationData["body"]!,
-          profilePic:
-              "$appWriteBaseURl/storage/buckets/$profilePicBucketId/files/${request.cusId}/preview?project=$projectID",
-          createdAt: DateTime.now().toLocal().toString(),
-        );
+            caId: request.caId!,
+            cusId: request.cusId!,
+            title: notificationData["title"]!,
+            body: '${notificationData["body"]!} ${result[1]}',
+            profilePic:
+                "$appWriteBaseURl/storage/buckets/$profilePicBucketId/files/${request.cusId}/preview?project=$projectID",
+            createdAt: DateTime.now().toLocal().toString(),
+            customerName: result[1]);
         Document? doc = await createBookRequestNotification(database, data);
         print(doc?.$id);
       } catch (e) {
