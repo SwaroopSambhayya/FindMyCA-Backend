@@ -1,7 +1,11 @@
+import 'package:appwrite_function/apis/createBookRequestNotification.dart';
+import 'package:appwrite_function/const.dart';
 import 'package:appwrite_function/fcm_service.dart';
-import 'package:appwrite_function/getProfile.dart';
+import 'package:appwrite_function/apis/getProfile.dart';
 import 'package:appwrite_function/models/booking.dart';
+import 'package:appwrite_function/models/notification_data.dart';
 import 'package:dart_appwrite/dart_appwrite.dart';
+import 'package:dart_appwrite/models.dart';
 
 /*
   'req' variable has:
@@ -23,7 +27,9 @@ Future<void> start(final req, final res) async {
       .setProject(req.variables['APPWRITE_FUNCTION_PROJECT_ID'])
       .setKey(req.variables['APPWRITE_FUNCTION_API_KEY'])
       .setSelfSigned(status: true);
-  String? token;
+  String? deviceToken;
+  Booking request;
+  Map<String, String> notificationData;
   // Uncomment the services you need, delete the ones you don't
   // final account = Account(client);
   // final avatars = Avatars(client);
@@ -42,25 +48,34 @@ Future<void> start(final req, final res) async {
   } else {
     print(req.variables['APPWRITE_FUNCTION_EVENT_DATA']);
 
-    Booking request =
-        Booking.fromJson(req.variables['APPWRITE_FUNCTION_EVENT_DATA']);
-    Map<String, String> notificationData = {
+    request = Booking.fromJson(req.variables['APPWRITE_FUNCTION_EVENT_DATA']);
+    notificationData = {
       "title": "You have got a new request",
       "body": "You have a new request please view for connection opportunity",
     };
     try {
-      token = await getProfile(database, request.caId);
-      print(token);
+      deviceToken = await getProfile(database, request.caId);
     } catch (e) {
       print(e);
     }
-    if (token != null) {
+    if (deviceToken != null) {
       try {
         bool res = await FCMService().sendFCMToUser(
             serverKey: req.variables['FCM_SERVER_KEY'],
-            userFCMToken: token,
+            userFCMToken: deviceToken,
             notificationData: notificationData);
         print(res);
+        NotificationData data = NotificationData(
+          caId: request.caId!,
+          cusId: request.cusId!,
+          title: notificationData["title"]!,
+          body: notificationData["body"]!,
+          profilePic:
+              "$appWriteBaseURl/storage/buckets/$profilePicBucketId/files/${request.cusId}/preview?project=$projectID",
+          createdAt: DateTime.now().toLocal().toString(),
+        );
+        Document? doc = await createBookRequestNotification(database, data);
+        print(doc?.$id);
       } catch (e) {
         print(e);
       }
